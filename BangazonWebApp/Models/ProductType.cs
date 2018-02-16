@@ -13,5 +13,7 @@ namespace BangazonWebApp.Models
 
         [Required]
         public string Name { get; set; }
+
+        public ICollection<Product> Products;
     }
 }
