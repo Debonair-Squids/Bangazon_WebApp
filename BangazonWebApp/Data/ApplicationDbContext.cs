@@ -14,6 +14,7 @@ namespace BangazonWebApp.Data
             : base(options)
         {
         }
+        public DbSet<CustomerPayment> CustomerPayment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
