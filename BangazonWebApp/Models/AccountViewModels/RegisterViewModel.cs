@@ -9,6 +9,33 @@ namespace BangazonWebApp.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name ="First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name ="Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        public DateTime DateCreated { get; set; }
+
+        [Required]
+        [Display(Name ="Street Address")]
+        public string StreetAddress { get; set; }
+
+        [Required]
+        [Display(Name ="City")]
+        public string City { get; set; }
+
+        [Required]
+        [Display(Name ="State (ex. TN, FL)")]
+        public string State { get; set; }
+
+        [Required]
+        [Display(Name ="Zip Code")]
+        public int Zip { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
