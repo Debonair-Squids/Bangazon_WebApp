@@ -12,6 +12,7 @@ namespace BangazonWebApp.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
+
         { }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
@@ -23,6 +24,7 @@ namespace BangazonWebApp.Data
         public DbSet<ProductLikeDislike> ProductLikeDislike { get; set; }
         public DbSet<ProductRecommend> ProductRecommend { get; set; }
         public DbSet<ProductType> ProductType { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
