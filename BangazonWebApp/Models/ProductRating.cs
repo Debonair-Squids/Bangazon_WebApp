@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace BangazonWebApp.Models
 {
     public class ProductRating
     {
-        [Required]
-        int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         [Required]
-        int ProductId { get; set; }
+        public int ProductId { get; set; }
         public Product Product { get; set; }
 
         [Required]

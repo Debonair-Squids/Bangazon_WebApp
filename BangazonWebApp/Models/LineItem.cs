@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace BangazonWebApp.Models
 {
-    public class ProductType
+    public class LineItem
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
 
-        public ICollection<Product> Products;
+        [Required]
+        public int InvoiceId { get; set; }
+        public Invoice Invoice { get; set; }
     }
 }
