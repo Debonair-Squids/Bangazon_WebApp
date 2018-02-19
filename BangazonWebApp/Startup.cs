@@ -19,6 +19,7 @@ namespace BangazonWebApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -37,6 +38,7 @@ namespace BangazonWebApp
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+      
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,15 +55,21 @@ namespace BangazonWebApp
                 app.UseExceptionHandler("/Home/Error");
             }
 
+
             app.UseStaticFiles();
 
             app.UseAuthentication();
 
+
             app.UseMvc(routes =>
             {
+                routes.MapRoute("types", "types",
+                    defaults: new { controller = "Products", action = "Types" });
+                routes.MapRoute("type", "types/{*type}",
+                    defaults: new { controller = "ProductTypes", action = "Detail" });
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Products}/{action=Index}/{id?}");
             });
         }
     }
