@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -29,17 +30,21 @@ namespace BangazonWebApp.Models
         [Required]
         public int Zip { get; set; }
 
-        public virtual ICollection<Product> Product;
+        public virtual ICollection<Product> Product { get; set; }
 
-        public virtual ICollection<Invoice> Invoice;
+        public virtual ICollection<Invoice> Invoice { get; set; }
 
-        public virtual ICollection<ProductRating> ProductRating;
+        public virtual ICollection<ProductRating> ProductRating { get; set; }
 
-        public virtual ICollection<ProductLikeDislike> ProductLikeDislike;
+        public virtual ICollection<ProductLikeDislike> ProductLikeDislike { get; set; }
 
-        public virtual ICollection<ProductRecommend> ProductRecommend;
+        [InverseProperty("Recommender")]
+        public virtual ICollection<ProductRecommend> ProductRecommender { get; set; }
+
+        [InverseProperty("Recommendee")]
+        public virtual ICollection<ProductRecommend> ProductRecommendee { get; set; }
 
 
-        
+
     }
 }
