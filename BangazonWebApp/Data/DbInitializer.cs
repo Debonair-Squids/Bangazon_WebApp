@@ -11,42 +11,45 @@ using Microsoft.Extensions.DependencyInjection;
 using BangazonWebApp.Data;
 using BangazonWebApp.Models;
 using BangazonWebApp.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BangazonWebApp.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(ApplicationDbContext context)
+        public async static void Initialize(ApplicationDbContext context)
         {
 
             context.Database.EnsureCreated();
-
-            {
+            
                 // Look for any products.
                 if (context.ProductType.Any())
                 {
                     return;   // DB has been seeded
                 }
 
-                var productTypes = new ProductType[]
+                // Create product types
+               var productTypes = new ProductType[]
                 {
                     new ProductType {
                         Name = "Electronics"
                     },
                     new ProductType {
                         Name = "Appliances"
-                    },
+                   },
                     new ProductType {
                         Name = "Housewares"
-                    },
+                   },
                 };
-
+                
+               // Add the created product types
                 foreach (ProductType i in productTypes)
                 {
                     context.ProductType.Add(i);
                 }
+
                 context.SaveChanges();
-            }
+            
         }
     }
 }

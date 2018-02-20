@@ -21,8 +21,10 @@ namespace BangazonWebApp.Models
         [StringLength(50)]
         public string Name { get; set; }
         
+
         [Required(ErrorMessage = "Price is Required")]
-        public int Price { get; set; }
+        public double Price { get; set; }
+
 
         [Required(ErrorMessage = "Description is Required")]
         [StringLength(255)]
