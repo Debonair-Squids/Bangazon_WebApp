@@ -17,18 +17,20 @@ namespace BangazonWebApp.Models
         [Required]
         public ApplicationUser User { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Product Name is Required")]
         [StringLength(50)]
         public string Name { get; set; }
         
-        [Required]
+
+        [Required(ErrorMessage = "Price is Required")]
         public double Price { get; set; }
 
-        [Required]
+
+        [Required(ErrorMessage = "Description is Required")]
         [StringLength(255)]
         public string Description { get; set; } 
 
-        [Required]
+        [Required(ErrorMessage = "Quantity is Required")]
         public int Quantity { get; set; }
 
         public int QuantitySold { get; set; }

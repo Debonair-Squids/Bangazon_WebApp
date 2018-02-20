@@ -30,7 +30,7 @@ namespace BangazonWebApp.Models.AccountViewModels
 
         [Required]
         [Display(Name ="Zip Code")]
-        public int Zip { get; set; }
+        public string Zip { get; set; }
 
         [Required]
         [EmailAddress]
