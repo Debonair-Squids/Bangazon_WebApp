@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonWebApp.Data;
 using BangazonWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangazonWebApp.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public ProductsController(ApplicationDbContext context)
         {
@@ -155,6 +157,49 @@ namespace BangazonWebApp.Controllers
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.Id == id);
+        }
+
+        //POST: AddProductToOrder
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProductToInvoice([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
+        {
+
+            var user = _userManager.GetUserAsync(User);
+            var allInvoices = _context.Invoice.ToList();
+            Invoice inv = null;
+            foreach (Invoice i in allInvoices)
+            {
+                if (i.User.Equals(user) && i.UserPayment == null)
+                {
+                    inv = i;
+                }
+            }
+
+            //If there is no open invoice in the DB Create a new invoice
+            if (inv == null)
+            {
+
+                inv = new Invoice();
+                inv.InvoiceDate = DateTime.Now;
+                inv.UserPaymentId = null;
+                if (ModelState.IsValid)
+                {
+                    _context.Invoice.Add(inv);
+                    await _context.SaveChangesAsync();
+
+                }
+            }
+
+
+            //add product to invoice
+            LineItem li = new LineItem();
+            li.InvoiceId = inv.Id;
+            li.ProductId = productId;
+
+            _context.LineItem.Add(li);
+            await _context.SaveChangesAsync();
         }
     }
 }

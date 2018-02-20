@@ -24,7 +24,7 @@ namespace BangazonWebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
+        public async Task<IActionResult> AddProductToInvoice([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
         {
 
             var user = _userManager.GetUserAsync(User);
@@ -48,7 +48,7 @@ namespace BangazonWebApp.Controllers
                 if (ModelState.IsValid)
                 {
                     _context.Invoice.Add(inv);
-                    _context.SaveChanges();
+                   await _context.SaveChangesAsync();
                     
                 }
             }
@@ -60,15 +60,7 @@ namespace BangazonWebApp.Controllers
             li.ProductId = productId;
 
             _context.LineItem.Add(li);
-            _context.SaveChanges();
-
-
-            
-
-            
-
-
-            
+            await _context.SaveChangesAsync();
         }
     }
 }
