@@ -159,7 +159,10 @@ namespace BangazonWebApp.Controllers
             return _context.Product.Any(e => e.Id == id);
         }
 
-        //POST: AddProductToOrder
+        //POST: AddProductToInvoice
+        //Method to add a product to an open invoice.
+        //Author: Tyler Bowman
+        //Required Parameters: int product Id
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -188,7 +191,7 @@ namespace BangazonWebApp.Controllers
                 {
                     _context.Invoice.Add(inv);
                     await _context.SaveChangesAsync();
-
+             
                 }
             }
 
@@ -198,8 +201,45 @@ namespace BangazonWebApp.Controllers
             li.InvoiceId = inv.Id;
             li.ProductId = productId;
 
-            _context.LineItem.Add(li);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                _context.LineItem.Add(li);
+                await _context.SaveChangesAsync();
+            }
+                return View();
+        }
+
+
+        //DELETE 
+        //Method to delete a product from an open invoice.
+        //Author: Tyler Bowman
+        //Required Parameters: int product Id
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProductFromInvoice(int productId)
+        {
+            var user = _userManager.GetUserAsync(User);
+            var allInvoices = _context.Invoice.ToList();
+            Invoice activeInvoice = null;
+
+            foreach(Invoice i in allInvoices)
+            {
+                if (i.User.Equals(user) && i.UserPaymentId == null)
+                {
+                    activeInvoice = i;
+                }  
+            }
+
+            var LineItemToDelete = _context.LineItem.Where(li => li.InvoiceId == activeInvoice.Id && li.ProductId == productId).Single();
+
+            if (ModelState.IsValid)
+            {
+                _context.LineItem.Remove(LineItemToDelete);
+                await _context.SaveChangesAsync();
+            }
+                return View();
+
+
         }
     }
 }
