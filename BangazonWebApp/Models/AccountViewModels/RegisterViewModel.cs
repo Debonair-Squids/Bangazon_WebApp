@@ -17,9 +17,6 @@ namespace BangazonWebApp.Models.AccountViewModels
         public string LastName { get; set; }
 
         [Required]
-        public DateTime DateCreated { get; set; }
-
-        [Required]
         [Display(Name ="Street Address")]
         public string StreetAddress { get; set; }
 
