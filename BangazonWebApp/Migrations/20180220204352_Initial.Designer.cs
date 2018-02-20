@@ -11,7 +11,7 @@ using System;
 namespace BangazonWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180219172252_Initial")]
+    [Migration("20180220204352_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,8 @@ namespace BangazonWebApp.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
-                    b.Property<int>("Zip");
+                    b.Property<string>("Zip")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -149,7 +150,7 @@ namespace BangazonWebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("Price");
+                    b.Property<double>("Price");
 
                     b.Property<int>("ProductTypeId");
 
@@ -431,7 +432,7 @@ namespace BangazonWebApp.Migrations
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "User")
                         .WithMany("ProductRating")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("BangazonWebApp.Models.ProductRecommend", b =>

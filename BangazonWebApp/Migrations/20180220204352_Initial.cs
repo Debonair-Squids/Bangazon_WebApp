@@ -47,7 +47,7 @@ namespace BangazonWebApp.Migrations
                     StreetAddress = table.Column<string>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Zip = table.Column<int>(nullable: false)
+                    Zip = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,7 +254,7 @@ namespace BangazonWebApp.Migrations
                     ImgUrl = table.Column<string>(nullable: false),
                     LocalDelivery = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Price = table.Column<int>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
                     ProductTypeId = table.Column<int>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
                     QuantitySold = table.Column<int>(nullable: false),

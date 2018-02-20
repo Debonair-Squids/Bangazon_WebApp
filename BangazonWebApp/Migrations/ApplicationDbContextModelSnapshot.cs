@@ -73,7 +73,8 @@ namespace BangazonWebApp.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
-                    b.Property<int>("Zip");
+                    b.Property<string>("Zip")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -148,7 +149,7 @@ namespace BangazonWebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("Price");
+                    b.Property<double>("Price");
 
                     b.Property<int>("ProductTypeId");
 
@@ -430,7 +431,7 @@ namespace BangazonWebApp.Migrations
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "User")
                         .WithMany("ProductRating")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("BangazonWebApp.Models.ProductRecommend", b =>
@@ -438,12 +439,12 @@ namespace BangazonWebApp.Migrations
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "Recommendee")
                         .WithMany("ProductRecommendee")
                         .HasForeignKey("RecommendeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "Recommender")
                         .WithMany("ProductRecommender")
                         .HasForeignKey("RecommenderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("BangazonWebApp.Models.UserPayment", b =>
