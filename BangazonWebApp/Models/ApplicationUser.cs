@@ -28,7 +28,7 @@ namespace BangazonWebApp.Models
         public string State { get; set; }
 
         [Required]
-        public int Zip { get; set; }
+        public string Zip { get; set; }
 
         public virtual ICollection<Product> Product { get; set; }
 
