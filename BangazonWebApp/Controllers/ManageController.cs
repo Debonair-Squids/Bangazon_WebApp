@@ -58,6 +58,11 @@ namespace BangazonWebApp.Controllers
             var model = new IndexViewModel
             {
                 Username = user.UserName,
+<<<<<<< HEAD
+=======
+                Email = user.Email,
+                Phone = user.Phone,
+>>>>>>> Development
                 IsEmailConfirmed = user.EmailConfirmed,
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -101,9 +106,9 @@ namespace BangazonWebApp.Controllers
             }
 
             var phoneNumber = user.PhoneNumber;
-            if (model.PhoneNumber != phoneNumber)
+            if (model.Phone != phoneNumber)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.Phone);
                 if (!setPhoneResult.Succeeded)
                 {
                     throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");

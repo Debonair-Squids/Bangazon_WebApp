@@ -33,8 +33,11 @@ namespace BangazonWebApp.Models.AccountViewModels
         public string Zip { get; set; }
 
         [Required]
+        [Phone]
+        public string Phone { get; set; }
+
+        [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
         public string Email { get; set; }
 
         [Required]
