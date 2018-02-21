@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BangazonWebApp.Data;
 using BangazonWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BangazonWebApp.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Products
@@ -57,10 +60,15 @@ namespace BangazonWebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Price,Description,Quantity,QuantitySold,DateAdded,LocalDelivery,ImgUrl,ProductTypeId")] Product product)
+
+        public async Task<IActionResult> Create([Bind("Id, Name,Price,Description,Quantity,QuantitySold,DateAdded,LocalDelivery,ImgUrl,ProductTypeId")] Product product)
+
         {
+            var currentUser = _userManager.GetUserAsync(HttpContext.User);
+            ModelState.Remove("User");
             if (ModelState.IsValid)
             {
+                product.User = await currentUser;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -155,6 +163,91 @@ namespace BangazonWebApp.Controllers
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.Id == id);
+        }
+
+        //POST: AddProductToInvoice
+        //Method to add a product to an open invoice.
+        //Author: Tyler Bowman
+        //Required Parameters: int product Id
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProductToInvoice([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
+        {
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            var allInvoices = _context.Invoice.ToList();
+            Invoice inv = null;
+            foreach (Invoice i in allInvoices)
+            {
+                if (i.User.Equals(user) && i.UserPayment == null)
+                {
+                    inv = i;
+                }
+            }
+
+            //If there is no open invoice in the DB Create a new invoice
+            if (inv == null)
+            {
+
+                inv = new Invoice();
+                inv.InvoiceDate = DateTime.Now;
+                inv.UserPaymentId = null;
+                ModelState.Remove("User");
+                if (ModelState.IsValid)
+                {
+                    inv.User = await user;
+                    _context.Invoice.Add(inv);
+                    await _context.SaveChangesAsync();
+             
+                }
+            }
+
+
+            //add product to invoice
+            LineItem li = new LineItem();
+            li.InvoiceId = inv.Id;
+            li.ProductId = productId;
+
+            if (ModelState.IsValid)
+            {
+                _context.LineItem.Add(li);
+                await _context.SaveChangesAsync();
+            }
+                return View();
+        }
+
+
+        //DELETE 
+        //Method to delete a product from an open invoice.
+        //Author: Tyler Bowman
+        //Required Parameters: int product Id
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProductFromInvoice(int productId)
+        {
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            var allInvoices = _context.Invoice.ToList();
+            Invoice activeInvoice = null;
+
+            foreach(Invoice i in allInvoices)
+            {
+                if (i.User.Equals(user) && i.UserPaymentId == null)
+                {
+                    activeInvoice = i;
+                }  
+            }
+
+            var LineItemToDelete = _context.LineItem.Where(li => li.InvoiceId == activeInvoice.Id && li.ProductId == productId).Single();
+
+            if (ModelState.IsValid)
+            {
+                _context.LineItem.Remove(LineItemToDelete);
+                await _context.SaveChangesAsync();
+            }
+                return View();
+
+
         }
     }
 }
