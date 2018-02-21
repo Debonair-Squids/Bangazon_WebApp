@@ -16,9 +16,10 @@ namespace BangazonWebApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Products
@@ -59,14 +60,18 @@ namespace BangazonWebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Description,Quantity,QuantitySold,DateAdded,LocalDelivery,ImgUrl,ProductTypeId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id, Name,Price,Description,Quantity,QuantitySold,DateAdded,LocalDelivery,ImgUrl,ProductTypeId")] Product product)
         {
+            var currentUser = _userManager.GetUserAsync(HttpContext.User);
+            ModelState.Remove("User");
             if (ModelState.IsValid)
             {
+                product.User = await currentUser;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            } 
+
             ViewData["ProductTypeId"] = new SelectList(_context.ProductType, "Id", "Name", product.ProductTypeId);
             return View(product);
         }
@@ -169,7 +174,7 @@ namespace BangazonWebApp.Controllers
         public async Task<IActionResult> AddProductToInvoice([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
         {
 
-            var user = _userManager.GetUserAsync(User);
+            var user = _userManager.GetUserAsync(HttpContext.User);
             var allInvoices = _context.Invoice.ToList();
             Invoice inv = null;
             foreach (Invoice i in allInvoices)
@@ -187,8 +192,10 @@ namespace BangazonWebApp.Controllers
                 inv = new Invoice();
                 inv.InvoiceDate = DateTime.Now;
                 inv.UserPaymentId = null;
+                ModelState.Remove("User");
                 if (ModelState.IsValid)
                 {
+                    inv.User = await user;
                     _context.Invoice.Add(inv);
                     await _context.SaveChangesAsync();
              
@@ -218,7 +225,7 @@ namespace BangazonWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProductFromInvoice(int productId)
         {
-            var user = _userManager.GetUserAsync(User);
+            var user = _userManager.GetUserAsync(HttpContext.User);
             var allInvoices = _context.Invoice.ToList();
             Invoice activeInvoice = null;
 
