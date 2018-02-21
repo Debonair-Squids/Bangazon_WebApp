@@ -220,7 +220,7 @@ namespace BangazonWebApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { FirstName = model.FirstName, LastName = model.LastName, StreetAddress = model.StreetAddress, City = model.City, State = model.State, Zip = model.Zip, Email = model.Email, UserName = model.Email };
+                var user = new ApplicationUser { FirstName = model.FirstName, LastName = model.LastName, StreetAddress = model.StreetAddress, City = model.City, State = model.State, Zip = model.Zip, Phone = model.Phone, Email = model.Email, UserName = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
