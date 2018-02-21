@@ -58,14 +58,22 @@ namespace BangazonWebApp.Controllers
             var model = new IndexViewModel
             {
                 Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                StreetAddress = user.StreetAddress,
+                City = user.City,
+                State = user.State,
+                Zip = user.Zip,
+                Phone = user.Phone,
                 StatusMessage = StatusMessage
             };
 
             return View(model);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -105,6 +113,53 @@ namespace BangazonWebApp.Controllers
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+
+            IndexViewModel model = new IndexViewModel();
+
+            var user = await _userManager.GetUserAsync(User);
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(IndexViewModel model)
+        {
+            var User = await GetCurrentUserAsync();
+            User.FirstName = model.User.FirstName;
+            User.LastName = model.User.LastName;
+            User.StreetAddress = model.User.StreetAddress;
+            User.City = model.User.City;
+            User.State = model.User.State;
+            User.ZipCode = model.User.ZipCode;
+            User.Phone = model.User.Phone;
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(User);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(User.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+       
 
         [HttpPost]
         [ValidateAntiForgeryToken]
