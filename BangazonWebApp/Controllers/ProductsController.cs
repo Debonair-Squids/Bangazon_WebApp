@@ -62,7 +62,6 @@ namespace BangazonWebApp.Controllers
         [ValidateAntiForgeryToken]
 
         public async Task<IActionResult> Create([Bind("Id, Name,Price,Description,Quantity,QuantitySold,DateAdded,LocalDelivery,ImgUrl,ProductTypeId")] Product product)
-
         {
             var currentUser = _userManager.GetUserAsync(HttpContext.User);
             ModelState.Remove("User");
