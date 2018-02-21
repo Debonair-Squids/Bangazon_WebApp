@@ -40,6 +40,7 @@ namespace BangazonWebApp.Migrations
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
@@ -251,13 +252,13 @@ namespace BangazonWebApp.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 255, nullable: false),
-                    ImgUrl = table.Column<string>(nullable: false),
+                    ImgUrl = table.Column<string>(nullable: true),
                     LocalDelivery = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Price = table.Column<double>(nullable: false),
                     ProductTypeId = table.Column<int>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
-                    QuantitySold = table.Column<int>(nullable: false),
+                    QuantitySold = table.Column<int>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -311,7 +312,7 @@ namespace BangazonWebApp.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ProductId = table.Column<int>(nullable: false),
-                    Rating = table.Column<int>(nullable: false),
+                    Rating = table.Column<int>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>

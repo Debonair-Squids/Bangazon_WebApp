@@ -11,7 +11,7 @@ using System;
 namespace BangazonWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180220204352_Initial")]
+    [Migration("20180221173050_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,9 @@ namespace BangazonWebApp.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
 
                     b.Property<string>("PhoneNumber");
 
@@ -141,8 +144,7 @@ namespace BangazonWebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<string>("ImgUrl")
-                        .IsRequired();
+                    b.Property<string>("ImgUrl");
 
                     b.Property<bool>("LocalDelivery");
 
@@ -156,7 +158,7 @@ namespace BangazonWebApp.Migrations
 
                     b.Property<int>("Quantity");
 
-                    b.Property<int>("QuantitySold");
+                    b.Property<int?>("QuantitySold");
 
                     b.Property<string>("UserId")
                         .IsRequired();
@@ -196,7 +198,7 @@ namespace BangazonWebApp.Migrations
 
                     b.Property<int>("ProductId");
 
-                    b.Property<int>("Rating");
+                    b.Property<int?>("Rating");
 
                     b.Property<string>("UserId")
                         .IsRequired();
@@ -432,7 +434,7 @@ namespace BangazonWebApp.Migrations
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "User")
                         .WithMany("ProductRating")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BangazonWebApp.Models.ProductRecommend", b =>
@@ -440,12 +442,12 @@ namespace BangazonWebApp.Migrations
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "Recommendee")
                         .WithMany("ProductRecommendee")
                         .HasForeignKey("RecommendeeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("BangazonWebApp.Models.ApplicationUser", "Recommender")
                         .WithMany("ProductRecommender")
                         .HasForeignKey("RecommenderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("BangazonWebApp.Models.UserPayment", b =>
