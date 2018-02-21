@@ -33,7 +33,7 @@ namespace BangazonWebApp.Models
         [Required(ErrorMessage = "Quantity is Required")]
         public int Quantity { get; set; }
 
-        public int QuantitySold { get; set; }
+        public int? QuantitySold { get; set; } = 0;
 
         [Required]
         [DataType(DataType.Date)]
@@ -41,8 +41,8 @@ namespace BangazonWebApp.Models
 
         [Required]
         public bool LocalDelivery { get; set; } = false;
-
-        [Required]
+       
+        [Display(Name = "Image URL")]
         public string ImgUrl { get; set; }
 
         [Required]

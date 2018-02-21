@@ -12,23 +12,27 @@ namespace BangazonWebApp.Models
     public class ApplicationUser : IdentityUser
     {
        
-        [Required]
+        [Required(ErrorMessage = "Please enter your first name")]
         public string FirstName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your last name")]
         public string LastName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your address")]
         public string StreetAddress { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your city")]
         public string City { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your state (ex TN, KY)")]
         public string State { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please enter your zip code")]
         public string Zip { get; set; }
+
+        [Required(ErrorMessage = "Please enter your phone number")]
+        [Phone]
+        public string Phone { get; set; }
 
         public virtual ICollection<Product> Product { get; set; }
 
