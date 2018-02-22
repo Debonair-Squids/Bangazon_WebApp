@@ -193,6 +193,16 @@ namespace BangazonWebApp.Controllers
             {
                 try
                 {
+                    
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Phone = model.Phone;
+                    user.StreetAddress = model.StreetAddress;
+                    user.City = model.City;
+                    user.Zip = model.Zip;
+                    user.State = model.State;
+                    
+                 
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
