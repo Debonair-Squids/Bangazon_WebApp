@@ -193,7 +193,7 @@ namespace BangazonWebApp.Controllers
             {
                 try
                 {
-                    _context.Update(User);
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
