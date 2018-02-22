@@ -5,14 +5,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BangazonWebApp.Models;
+using BangazonWebApp.Controllers;
+using BangazonWebApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BangazonWebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            return View();
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var applicationDbContext = _context.Product.Include(p => p.ProductType);
+            var listTwenty = applicationDbContext.OrderByDescending(x => x.DateAdded).Take(20);
+            return View(await listTwenty.ToListAsync());
         }
 
         public IActionResult About()

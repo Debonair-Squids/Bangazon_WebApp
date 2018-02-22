@@ -65,6 +65,8 @@
             @Html.DisplayFor(model => model.ProductType.Name)
         </dd>
     </dl>
+    
+    <input type="button" title="AddToInvoice" value="D" onclick="location.href='@Url.Action("AddProductToInvoice", "ProductsController", new { id = Model.Id })'" />
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
