@@ -1,0 +1,50 @@
+﻿@model BangazonWebApp.Models.InvoiceViewModels.InvoiceDetailsViewModel
+
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+
+<h2>Details</h2>
+
+    <div>
+    @if (Model.Invoice != null)
+    {
+        <h4>Invoice</h4>
+        <hr />
+
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Invoice.InvoiceDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Invoice.InvoiceDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.OrderedProducts)
+            </dt>
+            @foreach (var p in Model.OrderedProducts)
+            {
+                <dd>
+                    @Html.DisplayFor(modelItem => p.Name)
+                </dd>
+            }
+            <dt>
+                @Html.DisplayNameFor(model => model.InvoiceTotal)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.InvoiceTotal)
+            </dd>
+        </dl>
+         <a asp-action="AddPayment" asp-route-id="@Model.Invoice.Id">Complete Order</a>
+    }
+       
+        
+    </div>
+    <div>
+        
+      
+       @if(Model.Invoice == null) { 
+           <h2>You do not currently have an open invoice.</h2>
+       }
+        <a asp-action="Index">Back to List</a>
+    </div>

@@ -38,6 +38,8 @@
                     @if (Context.User.Identity.IsAuthenticated)
     {
                 <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell a Product</a></li>
+              
+                <li><a asp-area="" asp-controller="Invoice" asp-action="Details">View Cart</a></li>
 }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
