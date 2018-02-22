@@ -31,7 +31,7 @@ namespace BangazonWebApp.Controllers
         {
 
             var currentUser = _userManager.GetUserAsync(HttpContext.User);
-            Invoice currentInvoice = _context.Invoice.Where(i => i.User.Equals(currentUser) && i.UserPaymentId == null).SingleOrDefault();
+            Invoice currentInvoice = _context.Invoice.Where(i => i.User.Equals(currentUser.Result.Id) && i.UserPaymentId == null).SingleOrDefault();
             List<Product> orderedProducts = new List<Product>();
             double invoiceTotal = 0;
 
@@ -74,16 +74,28 @@ namespace BangazonWebApp.Controllers
                 return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> CancelInvoice(int InvoiceId)
         {
+            if(InvoiceId == null)
+            {
+                return NotFound();
+            }
             Invoice inv = _context.Invoice.Where(i => i.Id == InvoiceId).Single();
 
             if(inv != null)
             {
                 _context.Invoice.Remove(inv);
-                await _context.SaveChangesAsync();
+               await _context.SaveChangesAsync();
+
+                List<LineItem> InvoiceLineItems = _context.LineItem.Where(li => li.InvoiceId == InvoiceId).ToList();
+                foreach(LineItem li in InvoiceLineItems)
+                {
+                    _context.LineItem.Remove(li);
+                   await _context.SaveChangesAsync();
+                }
             }
-            return View();
+            return RedirectToAction("Details");
         }
         
     }

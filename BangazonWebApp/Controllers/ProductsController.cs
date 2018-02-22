@@ -170,21 +170,14 @@ namespace BangazonWebApp.Controllers
         //Author: Tyler Bowman
         //Required Parameters: int product Id
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProductToInvoice([Bind("Id,InvoiceDate,UserPaymentId")] int productId)
+        [HttpGet]
+        
+        public async Task<IActionResult> AddProductToInvoice(int productId)
         {
 
-            var user = _userManager.GetUserAsync(HttpContext.User);
-            var allInvoices = _context.Invoice.ToList();
-            Invoice inv = null;
-            foreach (Invoice i in allInvoices)
-            {
-                if (i.User.Equals(user) && i.UserPayment == null)
-                {
-                    inv = i;
-                }
-            }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var inv = _context.Invoice.SingleOrDefault(i=> i.User.Equals(user) && i.UserPayment == null);
+           
 
             //If there is no open invoice in the DB Create a new invoice
             if (inv == null)
@@ -193,14 +186,12 @@ namespace BangazonWebApp.Controllers
                 inv = new Invoice();
                 inv.InvoiceDate = DateTime.Now;
                 inv.UserPaymentId = null;
-                ModelState.Remove("User");
-                if (ModelState.IsValid)
-                {
-                    inv.User = await user;
+                
+                    inv.User = user;
                     _context.Invoice.Add(inv);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
              
-                }
+                
             }
 
 
@@ -209,12 +200,13 @@ namespace BangazonWebApp.Controllers
             li.InvoiceId = inv.Id;
             li.ProductId = productId;
 
-            if (ModelState.IsValid)
-            {
+            
                 _context.LineItem.Add(li);
-                await _context.SaveChangesAsync();
-            }
-                return View();
+                 _context.SaveChanges();
+            
+
+                return RedirectToAction("Index", "ProductType");
+                
         }
 
 

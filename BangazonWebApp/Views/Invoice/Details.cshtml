@@ -36,6 +36,9 @@
             </dd>
         </dl>
          <a asp-action="AddPayment" asp-route-id="@Model.Invoice.Id">Complete Order</a>
+         <a href="@Url.Action("CancelInvoice", "Invoice", new { InvoiceId = Model.Invoice.Id })">
+             <input type="submit" value="Cancel Order" />
+         </a>
     }
        
         
