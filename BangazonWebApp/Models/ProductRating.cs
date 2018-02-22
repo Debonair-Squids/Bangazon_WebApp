@@ -20,7 +20,7 @@ namespace BangazonWebApp.Models
         public ApplicationUser User { get; set; }
 
         
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
 
     }
 }
