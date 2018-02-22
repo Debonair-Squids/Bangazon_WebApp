@@ -35,12 +35,13 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @if (Context.User.Identity.IsAuthenticated)
-    {
-                <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell a Product</a></li>
-              
-                <li><a asp-area="" asp-controller="Invoice" asp-action="Details">View Cart</a></li>
-}
+
+
+                     @if (Context.User.Identity.IsAuthenticated) 
+                     { 
+                    <li><a asp-area="" asp-controller="Products" asp-action="Create">Sell a Product</a></li>
+                     }
+                    <li><a asp-area="" asp-controller="ProductType" asp-action="Index">Product Categories</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
