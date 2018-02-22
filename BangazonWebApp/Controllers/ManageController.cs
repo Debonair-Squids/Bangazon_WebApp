@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using BangazonWebApp.Models;
 using BangazonWebApp.Models.ManageViewModels;
 using BangazonWebApp.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BangazonWebApp.Controllers
 {
@@ -25,6 +26,7 @@ namespace BangazonWebApp.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly Data.ApplicationDbContext _context;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
@@ -34,13 +36,15 @@ namespace BangazonWebApp.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          Data.ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _context = context;
         }
 
         [TempData]
@@ -58,9 +62,83 @@ namespace BangazonWebApp.Controllers
             var model = new IndexViewModel
             {
                 Username = user.UserName,
-                Email = user.Email,
-                Phone = user.Phone,
                 IsEmailConfirmed = user.EmailConfirmed,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                StreetAddress = user.StreetAddress,
+                City = user.City,
+                State = user.State,
+                Zip = user.Zip,
+                Phone = user.Phone,
+                StatusMessage = StatusMessage
+            };
+
+            return View(model);
+        }
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Index(IndexViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //    {
+        //        throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+        //    }
+
+        //    var email = user.Email;
+        //    if (model.Email != email)
+        //    {
+        //        var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
+        //        if (!setEmailResult.Succeeded)
+        //        {
+        //            throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+        //        }
+        //    }
+
+        //    var phoneNumber = user.PhoneNumber;
+        //    if (model.Phone != phoneNumber)
+        //    {
+        //        var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.Phone);
+        //        if (!setPhoneResult.Succeeded)
+        //        {
+        //            throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+        //        }
+        //    }
+
+        //    StatusMessage = "Your profile has been updated";
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var model = new IndexViewModel
+            {
+                Username = user.UserName,
+                IsEmailConfirmed = user.EmailConfirmed,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                StreetAddress = user.StreetAddress,
+                City = user.City,
+                State = user.State,
+                Zip = user.Zip,
+                Phone = user.Phone,
                 StatusMessage = StatusMessage
             };
 
@@ -69,7 +147,7 @@ namespace BangazonWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IndexViewModel model)
+        public async Task<IActionResult> Edit(IndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -82,29 +160,74 @@ namespace BangazonWebApp.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var email = user.Email;
-            if (model.Email != email)
-            {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
-                }
-            }
+            //var firstName = user.FirstName;
+            //if (model.FirstName != firstName)
+            //{
+            //    var setFirstNameResult = await _userManager.Set(user, model.FirstName);
+            //    if (!setFirstNameResult.Succeeded)
+            //    {
+            //        throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+            //    }
+            //}
 
-            var phoneNumber = user.PhoneNumber;
-            if (model.Phone != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.Phone);
-                if (!setPhoneResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
-                }
-            }
+            //var email = user.Email;
+            //if (model.Email != email)
+            //{
+            //    var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
+            //    if (!setEmailResult.Succeeded)
+            //    {
+            //        throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+            //    }
+            //}
 
-            StatusMessage = "Your profile has been updated";
-            return RedirectToAction(nameof(Index));
+            //var phoneNumber = user.Phone;
+            //if (model.Phone != phoneNumber)
+            //{
+            //    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.Phone);
+            //    if (!setPhoneResult.Succeeded)
+            //    {
+            //        throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+            //    }
+            //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Phone = model.Phone;
+                    user.StreetAddress = model.StreetAddress;
+                    user.City = model.City;
+                    user.Zip = model.Zip;
+                    user.State = model.State;
+                    
+                 
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (user == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                StatusMessage = "Your profile has been updated";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+       
         }
+
+
+
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
