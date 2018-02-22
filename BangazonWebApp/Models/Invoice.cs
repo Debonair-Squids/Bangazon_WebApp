@@ -15,7 +15,7 @@ namespace BangazonWebApp.Models
 
         [Required]
         [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime InvoiceDate { get; set; }
 
         
